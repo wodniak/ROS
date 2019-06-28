@@ -9,6 +9,7 @@ find_package(catkin REQUIRED COMPONENTS
     genmsg 
     message_generation
     geometry_msgs
+    tf
 )
 
 ## Declare ROS messages and services
@@ -26,6 +27,7 @@ catkin_package(
     std_msgs 
     message_runtime
     geometry_msgs
+    tf
 )
 
 include_directories(
@@ -33,8 +35,11 @@ include_directories(
     include/ros_transframes
 )
 
+###
+###     TF_PUBLISHER_BASE
+###
 add_executable(tf_publisher_base 
-    src/main.cpp 
+    src/tf_publisher_base_main.cpp 
     src/tf_publisher_base.cpp
 )
 
@@ -45,7 +50,24 @@ target_link_libraries(tf_publisher_base
 add_dependencies(tf_publisher_base
     ros_transframes_generate_messages_cpp
 )
+###
+###
 
-# add_executable(listener src/listener.cpp)
-# target_link_libraries(listener ${catkin_LIBRARIES})
-# add_dependencies(listener beginner_tutorials_generate_messages_cpp)
+
+###
+###     TF_RECEIVER_TRANSLATOR
+###
+add_executable(tf_receiver_translator 
+    src/tf_receiver_translator_main.cpp 
+    src/tf_receiver_translator.cpp
+)
+
+target_link_libraries(tf_receiver_translator
+    ${catkin_LIBRARIES}
+)
+
+add_dependencies(tf_receiver_translator
+    ros_transframes_generate_messages_cpp
+)
+###
+###
