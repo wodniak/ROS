@@ -1,5 +1,10 @@
 #include "tf_publisher_base.hpp"
 
+geometry_msgs::Vector3 PublisherBase::vec;
+geometry_msgs::Quaternion PublisherBase::rot;
+pthread_mutex_t PublisherBase::mut;
+
+
 PublisherBase::PublisherBase(const char * topicName, const uint loop_rate_hz) : 
     loop_rate_hz(loop_rate_hz),
     n()
@@ -8,11 +13,12 @@ PublisherBase::PublisherBase(const char * topicName, const uint loop_rate_hz) :
 }
 
 
-std::vector<int> PublisherBase::parseInput(void)
+std::vector<int> parseInput(void)
 {
     // vector for parsed data
     std::vector<int> data;
     std::string str;
+
     if ( std::getline(std::cin, str))
     {
         std::stringstream ss(str);
@@ -28,33 +34,40 @@ std::vector<int> PublisherBase::parseInput(void)
         {
             std::cout << data.at(i) << " ";
         }
-        std::cout << std::endl;
     }
     return data;
 }
 
 
-int PublisherBase::getInputFromUser(geometry_msgs::Vector3 & vec, 
-                                    geometry_msgs::Quaternion & rot )
+void getInputFromUser()
 {
-    // get user input from terminal
-    std::vector<int> parsedData = parseInput();
-    if (parsedData.size() != 6) 
-    { 
-        std::cout << "Wrong number of ints"; 
-        return 0; 
+    while(true)
+    {
+        // get user input from terminal
+        std::vector<int> parsedData = parseInput();
+
+        if (parsedData.size() != 6) 
+        { 
+            std::cout << "  <-- Wrong number of ints" << std::endl; 
+        }
+        else
+        {
+            std::cout << "  <-- Sending" << std::endl; 
+
+            pthread_mutex_lock(&PublisherBase::mut);
+         
+            // fill vec and rot with data
+            PublisherBase::vec.x = parsedData[0];
+            PublisherBase::vec.y = parsedData[1];
+            PublisherBase::vec.z = parsedData[2];
+
+            PublisherBase::rot.x = parsedData[3];
+            PublisherBase::rot.y = parsedData[4];
+            PublisherBase::rot.z = parsedData[5];
+
+            pthread_mutex_unlock(&PublisherBase::mut);
+        }
     }
-
-    // fill vec and rot with data
-    vec.x = parsedData[0];
-    vec.y = parsedData[1];
-    vec.z = parsedData[2];
-
-    rot.x = parsedData[3];
-    rot.y = parsedData[4];
-    rot.z = parsedData[5];
-
-    return 1;
 }
 
 
@@ -62,25 +75,23 @@ void PublisherBase::publish()
 {
     geometry_msgs::TransformStamped msg;
 
-    // create empty data 
-    geometry_msgs::Vector3 vec;
-    geometry_msgs::Quaternion rot;
-
+    std::thread io_tread(getInputFromUser);
+    io_tread.detach();
     while (ros::ok())
     {        
         // save timestamp
         msg.header.stamp = ros::Time::now();
-        
         // update published data if input is valid
-        if( getInputFromUser(vec, rot) )
-        {
-            msg.transform.translation = vec;
-            msg.transform.rotation = rot;
-        }
 
+        pthread_mutex_lock(&PublisherBase::mut);
+
+        msg.transform.translation = PublisherBase::vec;
+        msg.transform.rotation = PublisherBase::rot;
         pub.publish(msg);
+
+        pthread_mutex_unlock(&PublisherBase::mut);
+
         ros::spinOnce();
         loop_rate_hz.sleep();
-        ++count;
     }
 }

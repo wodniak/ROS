@@ -14,14 +14,18 @@ class ReceiverTranslator
 private:
     ros::NodeHandle node;
     ros::Subscriber sub;
-    ros::Publisher pub;
+    ros::Publisher pub_ned;
+    ros::Publisher pub_nwu;
+
 
 public:
     ReceiverTranslator();
     void publishTranslatedFrames();
 
     static bool m_flag;
-    static geometry_msgs::TransformStamped msg_callback;
+    static geometry_msgs::TransformStamped msg_ned_callback;
+    static geometry_msgs::TransformStamped msg_nwu_callback;
+
 };
 
 /*

@@ -4,6 +4,7 @@
 #include <sstream>
 #include <iostream>
 #include <string>
+#include <thread>
 
 
 
@@ -20,23 +21,23 @@ private:
     ros::Publisher pub;
     ros::Rate loop_rate_hz;
 
-    uint count = 0;
-
     /*
      *  Get input from user terminal
      *  @return vector with parsed numbers
      */
-    std::vector<int> parseInput(void);
+    // std::vector<int> parseInput(void);
 
     /*
      *  Fill geometry_msgs transform data with parsed input
-     *  @param vec : 
-     *  @param rot :
      *  @return : result code
      */
-    int getInputFromUser(geometry_msgs::Vector3 & vec, geometry_msgs::Quaternion & rot);
+    // void getInputFromUser(void);
 
 public:
     PublisherBase(const char * topicName, const uint loop_rate);
     void publish(void);
+ 
+    static pthread_mutex_t mut;
+    static geometry_msgs::Vector3 vec;
+    static geometry_msgs::Quaternion rot;
 };

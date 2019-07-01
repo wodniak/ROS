@@ -1,14 +1,22 @@
 #include "tf_receiver_translator.hpp"
 
 bool ReceiverTranslator::m_flag = false;
-geometry_msgs::TransformStamped ReceiverTranslator::msg_callback;
+geometry_msgs::TransformStamped ReceiverTranslator::msg_ned_callback;
+geometry_msgs::TransformStamped ReceiverTranslator::msg_nwu_callback;
+
+
 
 void translateCallback(const geometry_msgs::TransformStamped& msg_enu)
 {
-    static tf::TransformBroadcaster br;
     geometry_msgs::TransformStamped msg_ned;
+    geometry_msgs::TransformStamped msg_nwu;
 
-    //ENU ->> NED
+    /*  ENU ->> NED
+    Swap X and Y, invert Z, do not touch W
+    Rotate 90 degrees about z axis (yaw) */
+    msg_ned.transform.translation.x = msg_enu.transform.rotation.y;
+    msg_ned.transform.translation.y = msg_enu.transform.rotation.x;
+    msg_ned.transform.translation.z = -msg_enu.transform.rotation.z;
     msg_ned.transform.rotation.x = msg_enu.transform.rotation.y;
     msg_ned.transform.rotation.y = msg_enu.transform.rotation.x;
     msg_ned.transform.rotation.z = -msg_enu.transform.rotation.z;
@@ -16,18 +24,22 @@ void translateCallback(const geometry_msgs::TransformStamped& msg_enu)
     msg_ned.header.stamp = ros::Time::now();
     msg_ned.child_frame_id = msg_enu.header.frame_id;
     
-    // br.sendTransform(msg_ned);
-    std::cout << "CALLBACK" << std::endl;
+
+    /*  ENU ->> NWU
+    
+    */
+
+    //copy new messages and set flag to send it
     ReceiverTranslator::m_flag = true;
-    std::cout << "flag: " << ReceiverTranslator::m_flag << std::endl;
-    ReceiverTranslator::msg_callback = msg_ned;
-    // pub.publish(msg_ned);
+    ReceiverTranslator::msg_ned_callback = msg_ned;
+    ReceiverTranslator::msg_nwu_callback = msg_nwu;
 }
 
 
 ReceiverTranslator::ReceiverTranslator() : node(), sub()
 {
-    pub = node.advertise<geometry_msgs::TransformStamped>("tf_ned", 1000);
+    pub_ned = node.advertise<geometry_msgs::TransformStamped>("tf_ned", 1000);
+    pub_nwu = node.advertise<geometry_msgs::TransformStamped>("tf_nwu", 1000);
 }
 
 
@@ -39,8 +51,9 @@ void ReceiverTranslator::publishTranslatedFrames()
     {
         if(ReceiverTranslator::m_flag)
         {
-            std::cout << "Publish ned";
-            pub.publish(ReceiverTranslator::msg_callback);
+            pub_ned.publish(ReceiverTranslator::msg_nwu_callback);
+            pub_nwu.publish(ReceiverTranslator::msg_nwu_callback);
+
             ReceiverTranslator::m_flag = false;
         }
         ros::spinOnce();
