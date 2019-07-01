@@ -51,7 +51,7 @@ void ReceiverTranslator::publishTranslatedFrames()
     {
         if(ReceiverTranslator::m_flag)
         {
-            pub_ned.publish(ReceiverTranslator::msg_nwu_callback);
+            pub_ned.publish(ReceiverTranslator::msg_ned_callback);
             pub_nwu.publish(ReceiverTranslator::msg_nwu_callback);
 
             ReceiverTranslator::m_flag = false;
@@ -59,21 +59,3 @@ void ReceiverTranslator::publishTranslatedFrames()
         ros::spinOnce();
     }
 }
-
-
-/*
-    The incoming quaternion is in ENU frame
-    Quaternion ENU <-> NED:
-    Swap X and Y
-    Invert Z
-    Do not touch W
-    Rotate 90 degrees about z axis (yaw)
-//  */
-// tf::Quaternion quaternion_NED_ENU(tf::Quaternion & q)
-// {
-//     tf::Quaternion q_ENU(q.y, q.x, -q.z, q.w);
-//     tf::Vector3 vec(0, 0, 1);
-//     tf::Quaternion q_90(vec, 90);
-//     q_ENU = q_ENU * q_90;
-//     return q_ENU;
-// }

@@ -4,16 +4,11 @@ geometry_msgs::Vector3 PublisherBase::vec;
 geometry_msgs::Quaternion PublisherBase::rot;
 pthread_mutex_t PublisherBase::mut;
 
+// 
+// INPUTPARSER 
+// 
 
-PublisherBase::PublisherBase(const char * topicName, const uint loop_rate_hz) : 
-    loop_rate_hz(loop_rate_hz),
-    n()
-{
-    pub = n.advertise<geometry_msgs::TransformStamped>("base_tf_enu", 1000);
-}
-
-
-std::vector<int> parseInput(void)
+std::vector<int> InputParser::parseInput(void)
 {
     // vector for parsed data
     std::vector<int> data;
@@ -39,7 +34,7 @@ std::vector<int> parseInput(void)
 }
 
 
-void getInputFromUser()
+void InputParser::getInputFromUser()
 {
     while(true)
     {
@@ -71,11 +66,23 @@ void getInputFromUser()
 }
 
 
+// 
+// PUBLISHERBASE 
+// 
+
+PublisherBase::PublisherBase(const char * topicName, const uint loop_rate_hz) : 
+    loop_rate_hz(loop_rate_hz),
+    n()
+{
+    pub = n.advertise<geometry_msgs::TransformStamped>("base_tf_enu", 1000);
+}
+
+
 void PublisherBase::publish()
 {
     geometry_msgs::TransformStamped msg;
 
-    std::thread io_tread(getInputFromUser);
+    std::thread io_tread( (InputParser()) );
     io_tread.detach();
     while (ros::ok())
     {        

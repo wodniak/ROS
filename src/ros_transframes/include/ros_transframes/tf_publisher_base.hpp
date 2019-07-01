@@ -7,7 +7,6 @@
 #include <thread>
 
 
-
 /*
  *  Node constantly takes user input (from keyboard) of 6 numbers divided by coma:
  *  x,y,z,roll,pitch,yaw (xyz coordinates in meters and roll, pitch, yaw in degrees)
@@ -21,17 +20,6 @@ private:
     ros::Publisher pub;
     ros::Rate loop_rate_hz;
 
-    /*
-     *  Get input from user terminal
-     *  @return vector with parsed numbers
-     */
-    // std::vector<int> parseInput(void);
-
-    /*
-     *  Fill geometry_msgs transform data with parsed input
-     *  @return : result code
-     */
-    // void getInputFromUser(void);
 
 public:
     PublisherBase(const char * topicName, const uint loop_rate);
@@ -40,4 +28,30 @@ public:
     static pthread_mutex_t mut;
     static geometry_msgs::Vector3 vec;
     static geometry_msgs::Quaternion rot;
+};
+
+
+class InputParser
+{
+private:
+    /*
+     *  Get input from user terminal
+     *  @return vector with parsed numbers
+     */
+    std::vector<int> parseInput(void);
+
+    /*
+     *  Fill geometry_msgs transform data with parsed input
+     *  @important : It writes directly to static variables from PublisherBase class
+     */
+    void getInputFromUser(void);
+
+
+public:
+    InputParser(){};
+    
+    void operator()()
+    {
+        getInputFromUser();
+    }
 };
