@@ -10,6 +10,7 @@ project(ros_threads)
 find_package(catkin REQUIRED COMPONENTS
   roscpp
   rospy
+  roslib
   std_msgs
   genmsg 
   message_generation
@@ -108,6 +109,7 @@ catkin_package(
  CATKIN_DEPENDS 
  roscpp
  rospy 
+ roslib
  std_msgs 
  message_runtime
 #  DEPENDS system_lib
