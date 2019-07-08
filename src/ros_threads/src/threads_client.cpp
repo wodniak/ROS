@@ -1,35 +1,45 @@
-// #include "ros/ros.h"
-// #include "beginner_tutorials/AddTwoInts.h"
-// #include <cstdlib>
+#include "threads_client.hpp"
 
-// int main(int argc, char **argv)
-// {
-//   ros::init(argc, argv, "add_two_ints_client");
-//   if (argc != 3)
-//   {
-//     ROS_INFO("usage: add_two_ints_client X Y");
-//     return 1;
-//   }
 
-//   ros::NodeHandle n;
-//   ros::ServiceClient client = n.serviceClient<beginner_tutorials::AddTwoInts>("add_two_ints");
-//   beginner_tutorials::AddTwoInts srv;
-//   srv.request.a = atoll(argv[1]);
-//   srv.request.b = atoll(argv[2]);
-//   if (client.call(srv))
-//   {
-//     ROS_INFO("Sum: %ld", (long int)srv.response.sum);
-//   }
-//   else
-//   {
-//     ROS_ERROR("Failed to call service add_two_ints");
-//     return 1;
-//   }
+ThreadsClient::ThreadsClient() : node()
+{
+    ROS_INFO("Client Started");
+    client = node.serviceClient<ros_threads::unix_time_now>("unix_time_now");
+    timerPrint = node.createTimer(ros::Duration(0.5), &ThreadsClient::printUnixTime, this);
+    timerServiceCall = node.createTimer(ros::Duration(1.0), &ThreadsClient::callService, this);
+    
 
-//   return 0;
-// }
+    ros::spin();
+}
+
+
+ThreadsClient::~ThreadsClient(){}
+
+
+void ThreadsClient::startClient()
+{
+}
+
+
+void ThreadsClient::printUnixTime(const ros::TimerEvent& e)
+{
+    ros::Time currentTime = ros::Time::now();
+    ROS_INFO("Curent Time: %i.%i", currentTime.sec, currentTime.nsec);
+}
+
+
+void ThreadsClient::callService(const ros::TimerEvent& e)
+{
+    ROS_INFO("Doing something long");
+    ros::Duration(2.0).sleep();    
+}
+
+
 
 int main(int argc, char **argv)
 {
+    ros::init(argc, argv, "unix_time_now_client");
+    ThreadsClient * client = new ThreadsClient();
+    client->startClient();
     return 0;
 }
