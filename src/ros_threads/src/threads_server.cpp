@@ -17,27 +17,38 @@ bool ThreadsServer::unix_time_now_callback(ros_threads::unix_time_now::Request &
     std::cout << std::endl;
     ROS_INFO("request: delay=%ld", (long int)req.Delay_s);
     serverAnswer ans;
-    ans.req = req;
-    ans.res = res;
+    ans.req = &req;
+    ans.res = &res;
     ans.time = ros::Time::now();
-
-    std::thread sendResponse(&ThreadsServer::send_response, this, ans);
+    ans.res->Time = "alamakota";
+    std::thread sendResponse(&ThreadsServer::send_response, this, std::ref(ans));
     ROS_INFO("Spawned response thread, ID: %X, time: %f", sendResponse.get_id(), ans.time.toSec());
     sendResponse.detach();
+
+    return true;
 }
 
 
-void ThreadsServer::send_response(serverAnswer ans)
+void ThreadsServer::send_response(serverAnswer & ans)
 {
-    const int delay = ans.req.Delay_s; 
+    const int delay = ans.req->Delay_s; 
     if (delay >= 0 and delay <= 3)
     {
-        ros::Duration(delay).sleep();    
+        ros::Duration(delay).sleep();
+        // std::this_thread::sleep_for(std::chrono::milliseconds(3000));    
     }
+
     ros::Time sentTime = ros::Time::now();
+    float seconds = sentTime.toSec();
     ROS_INFO("Thread ID: %X Sent response time: %f", std::this_thread::get_id(), sentTime.toSec());
-    std::string timeUnix;    
-    ans.res.Time = timeUnix;
+    std::stringstream time;
+    time << seconds;
+
+    const std::string timeUnix = time.str();
+    std::cout << timeUnix << std::endl;   
+    ans.res->Time = timeUnix;
+    ans.res->Time = "dupa";
+    
 }
 
 

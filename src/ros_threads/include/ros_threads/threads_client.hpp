@@ -21,9 +21,4 @@ void callService(const ros::TimerEvent& e);
 public:
     ThreadsClient();
     ~ThreadsClient();
-
-    /*
-     *
-     */
-    void startClient();
 };
