@@ -4,7 +4,7 @@
 #include <chrono>
 #include <mutex>
 
-typedef struct 
+typedef struct
 {
     ros_threads::unix_time_now::Request * req;
     ros_threads::unix_time_now::Response * res;

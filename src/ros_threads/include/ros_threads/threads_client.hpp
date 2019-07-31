@@ -1,10 +1,13 @@
 #include "ros/ros.h"
 #include "ros_threads/unix_time_now.h"
+#include <ros/spinner.h>
+#include <ros/callback_queue.h>
+
 
 /*
  *  Every half a second prints current UNIX time up to nanosecond
  *  very second send /unix_time_now service request with randomly generated ​delay between 0 and 5
- * 
+ *
  */
 class ThreadsClient
 {

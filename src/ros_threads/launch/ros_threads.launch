@@ -1,0 +1,4 @@
+<launch>
+<node name="unix_time_now_server" pkg="ros_threads" type="threads_server" output="screen"/>
+<node name="unix_time_now_client" pkg="ros_threads" type="threads_client" output="screen"/>
+</launch>

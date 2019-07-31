@@ -1,1 +1,1 @@
-/opt/ros/melodic/share/catkin/cmake/toplevel.cmake
+/home/gwozniak/ros_catkin_ws/install_isolated/share/catkin/cmake/toplevel.cmake
