@@ -34,11 +34,19 @@ include_directories(
     ${OpenCV_INCLUDE_DIRS}
   )
 
+#webcam
 add_executable(webcam src/webcam.cpp)
-
 target_link_libraries( webcam
     ${catkin_LIBRARIES}
     ${OpenCV_LIBS}
     )
-
 add_dependencies(webcam ros_webcam_gencpp)
+
+#snapshot
+add_executable(snapshot src/snapshot.cpp)
+target_link_libraries(
+    snapshot
+    ${catkin_LIBRARIES}
+    ${OpenCV_LIBS}
+    )
+add_dependencies(snapshot ros_snapshot_gencpp)

@@ -1,0 +1,4 @@
+<launch>
+<node name="webcam" pkg="ros_webcam" type="webcam" output="screen" args="0"/>
+<node name="snapshot" pkg="ros_webcam" type="snapshot" output="screen"/>
+</launch>

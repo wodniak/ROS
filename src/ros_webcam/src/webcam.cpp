@@ -1,4 +1,4 @@
-#include "webcam.h"
+#include "webcam.hpp"
 
 
 WebcamImage::WebcamImage(int videoSource) : nh(), it(nh)
@@ -33,10 +33,7 @@ WebcamImage::WebcamImage(int videoSource) : nh(), it(nh)
 }
 
 
-WebcamImage::~WebcamImage()
-{
-
-}
+WebcamImage::~WebcamImage(){}
 
 
 int main(int argc, char** argv)
@@ -44,7 +41,7 @@ int main(int argc, char** argv)
     // Check if video source has been passed as a parameter
     if(argv[1] == NULL)
     {
-        ROS_INFO("Video source not passed as parameter.");
+        ROS_ERROR("Video source not passed as parameter.");
         return 1;
     }
 
@@ -53,7 +50,7 @@ int main(int argc, char** argv)
     int videoSource;
     if(!(video_sourceCmd >> videoSource))
     {
-        ROS_INFO("Could not convert passed argument to integer.");
+        ROS_ERROR("Could not convert passed argument to integer.");
         return 1;
     }
 
