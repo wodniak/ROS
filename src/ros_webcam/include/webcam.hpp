@@ -19,6 +19,7 @@ private:
 public:
     WebcamImage(int videoSource);
     ~WebcamImage();
+
 };
 
 #endif //WEBCAM_H

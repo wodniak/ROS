@@ -28,6 +28,11 @@ catkin_package(
     image_transport
 )
 
+add_service_files(
+    DIRECTORY srv
+    FILES take_snapshot.srv
+)
+
 include_directories(
     ${catkin_INCLUDE_DIRS}
     include/
