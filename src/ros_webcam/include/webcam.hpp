@@ -5,9 +5,11 @@
 #include <image_transport/image_transport.h>
 #include <opencv2/highgui/highgui.hpp>
 #include <cv_bridge/cv_bridge.h>
-#include <sstream> // for converting the command line parameter to integer
+#include <sstream>
 
-
+/**
+ *  Publish to topic with images from camera
+ */
 class WebcamImage
 {
 private:

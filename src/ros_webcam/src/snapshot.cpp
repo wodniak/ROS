@@ -1,5 +1,6 @@
 #include "snapshot.hpp"
 
+
 Snapshot::Snapshot() : nh(), it(nh)
 {
     cv::namedWindow("view");
@@ -10,10 +11,12 @@ Snapshot::Snapshot() : nh(), it(nh)
 
     sub = it.subscribe("camera/image", 1, &Snapshot::imageCallback, this);
     srv = nh.advertiseService("take_snapshot", &Snapshot::takeSnapshot, this);
+}
 
-    ros::spin();
+
+Snapshot::~Snapshot()
+{
     cv::destroyWindow("view");
-
 }
 
 
@@ -36,15 +39,19 @@ bool Snapshot::takeSnapshot(std_srvs::Empty::Request& request, std_srvs::Empty::
 {
     std::string imageName = path + std::to_string(++NoOfImages) + ".jpg";
     bool result = cv::imwrite(imageName, lastImage);
-    ROS_INFO("take_snapshot srv : result= %i, saved img number: %u", result, NoOfImages);
+    ROS_INFO("take_snapshot srv : result = %i, image_number = %u", result, NoOfImages);
 
-    return true;
+    if(result)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
 }
 
-/**
- *  Calculate number of image files in tmp/webcam directory
- *
- */
+
 uint Snapshot::__countImages()
 {
     uint noOfImages = 0;
@@ -59,9 +66,11 @@ uint Snapshot::__countImages()
     return noOfImages;
 }
 
+
 int main(int argc, char **argv)
 {
-    std::cout << argv[0] << std::endl;
     ros::init(argc, argv, "snapshot");
     Snapshot *sn = new Snapshot();
+    ros::spin();
+    delete sn;
 }
