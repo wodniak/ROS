@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(ros_webcam)
-
+add_compile_options(-std=c++17)
+set(CMAKE_CXX_FLAGS "-std=c++17 ${CMAKE_CXX_FLAGS}")
 set(OpenCV_DIR ~/opencv/installation/OpenCV-4.1.1/lib/cmake/opencv4/)
 
 find_package(OpenCV REQUIRED)

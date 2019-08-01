@@ -3,9 +3,13 @@
 
 #include "ros/ros.h"
 #include <image_transport/image_transport.h>
-#include <opencv2/highgui/highgui.hpp>
 #include <cv_bridge/cv_bridge.h>
 #include <std_srvs/Empty.h>
+#include <opencv2/highgui/highgui.hpp>
+#include <boost/filesystem.hpp>
+
+namespace filesys = boost::filesystem;
+
 
 class Snapshot
 {
@@ -15,8 +19,12 @@ private:
     image_transport::ImageTransport it;
 
     ros::ServiceServer srv;
+    cv::Mat lastImage;
 
+    std::string path;
+    uint NoOfImages;
 
+    uint __countImages();
 public:
     Snapshot();
     ~Snapshot(){};
