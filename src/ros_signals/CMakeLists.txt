@@ -43,10 +43,9 @@ target_link_libraries(runner ${catkin_LIBRARIES})
 add_dependencies(runner ros_runner_gencpp)
 
 #killer
-# add_executable(snapshot src/snapshot.cpp)
-# target_link_libraries(
-#     snapshot
-#     ${catkin_LIBRARIES}
-#     ${OpenCV_LIBS}
-#     )
-# add_dependencies(snapshot ros_snapshot_gencpp)
+add_executable(killer src/killerNode.cpp)
+target_link_libraries(
+    killer
+    ${catkin_LIBRARIES}
+    )
+add_dependencies(killer ros_killer_gencpp)

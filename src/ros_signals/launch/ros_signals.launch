@@ -1,0 +1,4 @@
+<launch>
+<node name="runner_node" pkg="ros_signals" type="runner" output="screen"/>
+<node name="killer_node" pkg="ros_signals" type="killer" output="screen"/>
+</launch>

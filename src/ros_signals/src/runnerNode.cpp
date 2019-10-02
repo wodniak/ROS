@@ -16,15 +16,13 @@ void Runner::publishPID()
     //get Process ID, convert to uint64 and fill the std_msgs
     if(this->pub_pid)
     {
-        std::stringstream pid;
-        pid << std::this_thread::get_id();
-
+        pid_t pid = getpid();
         std_msgs::UInt64 p;
-        p.data = std::stoull(pid.str());
+        p.data = pid;
 
         pub_pid.publish(p);
+        ROS_INFO("Published %i", p.data);
     }
-
 }
 
 
@@ -63,7 +61,7 @@ void Runner::signalHandler(int sig)
 
 void Runner::spin()
 {
-    ros::Rate loop_rate_hz(5);
+    ros::Rate loop_rate_hz(0.5);
     while (nh.ok())
     {
         this->publishPID();
