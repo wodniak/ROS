@@ -50,7 +50,7 @@ void Runner::signalHandler(int sig)
     if(killer_signal == sig)
     {
         ROS_INFO("Terminating with signal: %i", sig);
-        exit(sig);
+        ros::shutdown();
     }
     else    //do nothing
     {

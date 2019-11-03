@@ -48,7 +48,7 @@ void Killer::tryToKill()
             if(!(result_of_kill == 0 or result_of_kill == EPERM))
             {
                 ROS_INFO("KILLER - Process %i killed", pid_to_kill);
-                exit(1);    //terminate this proccess
+                ros::shutdown();
             }
         }
         else
